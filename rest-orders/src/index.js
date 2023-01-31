@@ -19,8 +19,10 @@ async function main() {
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
   });
   const { url } = await startStandaloneServer(server, {
-    // @WORKSHOP: 2.2.3 - Pass orders API through context
     context: async ({ req }) => ({
+      dataSources: {
+        ordersAPI: new OrdersAPI()
+      }
     }),
     listen: { port },
   });
