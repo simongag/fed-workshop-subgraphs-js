@@ -11,12 +11,28 @@ import {
 import {gql, useQuery} from '@apollo/client';
 import {useParams} from 'react-router-dom';
 
-//Create a GET_PRODUCT_DETAILS query here! 
+export const GET_PRODUCT_DETAILS = gql`
+  query GetProductDetails($productId: ID!) {
+    product(id: $productId) {
+      id
+      name
+      description
+      price
+      images
+    }
+  }
+`;
 
 export default function Product() {
   const {id} = useParams();
 
-  // PARSE error, loading, and data here! Hint: useQuery
+  const response = useQuery(GET_PRODUCT_DETAILS, {
+    variables: {productId: id}
+  });
+  const {loading, error, data = {}} = response;
+  if (loading) return <Spinner />;
+  if (error) return <Error error={error.message} />;
+  const {name, description, images} = data?.product || {};
 
   return (
     <>

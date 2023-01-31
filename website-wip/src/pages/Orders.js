@@ -3,11 +3,47 @@ import {Error} from './Error';
 import {Heading, Image, SimpleGrid, Stack, Text} from '@chakra-ui/react';
 import {gql, useQuery} from '@apollo/client';
 
-//Create a GET_USER_ORDERS query here! 
+export const GET_USER_ORDERS = gql`
+  query Orders($userId: ID!) {
+    user(id: $userId) {
+      firstName
+      lastName
+      email
+      address
+      activeCart {
+        items {
+          id
+          colorway
+          price
+          parent {
+            name
+            images
+          }
+        }
+        subtotal
+      }
+      orders {
+        items {
+          id
+          parent {
+            name
+            images
+            price
+          }
+        }
+      }
+    }
+  }
+`;
 
 export default function Orders() {
-  // PARSE error, loading, and data for GET_USER_ORDERS here! Hint: useQuery
-  
+  const response = useQuery(GET_USER_ORDERS, {
+    variables: {userId: '11'}
+  });
+  const {loading, error, data = {}} = response;
+  if (loading) return <Spinner />;
+  if (error) return <Error error={error.message} />;
+
   // prettier-ignore
   const {firstName, lastName, email, address, activeCart, orders} = data.user || {};
   console.log(orders);
